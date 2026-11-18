@@ -160,4 +160,4 @@ Jenkins Build: ${BUILD_URL}
             }
         }
     }
-\n}\n
+\}
