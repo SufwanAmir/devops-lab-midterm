@@ -136,7 +136,7 @@ print('API test passed:', m)
                         returnStdout: true
                     ).trim()
 
-                    if (recipient && recipient.contains('@')) {
+                    if (recipient && recipient ==~ /[^\s@]+@[^\s@]+\.[^\s@]+/) {
                         emailext(
                             to: recipient,
                             from: 'sufwanamir99@gmail.com',
@@ -153,6 +153,8 @@ API Metrics: http://13.60.111.25:8000/metrics
 Jenkins Build: ${BUILD_URL}
 """
                         )
+                    } else {
+                        echo "No valid commit author email found. Notification skipped."
                     }
                 }
             }
