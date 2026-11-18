@@ -120,4 +120,36 @@ print('API test passed:', m)
             }
         }
     }
+
+    post {
+        success {
+            script {
+                def pushTriggered = currentBuild.getBuildCauses().any { cause ->
+                    def name = cause['_class'] ?: ''
+                    name.contains('GitHubPushCause') ||
+                    name.contains('SCMTriggerCause')
+                }
+
+                if (pushTriggered) {
+                    emailext(
+                        to: 'qasimalik@gmail.com',
+                        from: 'sufwanamir99@gmail.com',
+                        subject: 'CSC418 Midterm - FA23-BDS-063 - Pipeline SUCCESS',
+                        body: """
+The automated ML pipeline completed successfully.
+
+Student ID: FA23-BDS-063
+Build Number: ${BUILD_NUMBER}
+Git Commit: ${BUILD_SHA}
+Docker Image: sufwanamir/devops-midterm-api:1.0
+
+API Metrics: http://13.60.111.25:8000/metrics
+Jenkins Build: ${BUILD_URL}
+"""
+                    )
+                }
+            }
+        }
+    }
+
 }
