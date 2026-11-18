@@ -125,9 +125,8 @@ print('API test passed:', m)
         success {
             script {
                 def pushTriggered = currentBuild.getBuildCauses().any { cause ->
-                    def name = cause['_class'] ?: ''
-                    name.contains('GitHubPushCause') ||
-                    name.contains('SCMTriggerCause')
+                    def description = cause['shortDescription'] ?: ''
+                    description.toLowerCase().contains('github push by qasim')
                 }
 
                 if (pushTriggered) {
