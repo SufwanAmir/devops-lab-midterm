@@ -121,20 +121,27 @@ print('API test passed:', m)
         }
     }
 
+
     post {
         success {
             script {
                 def pushTriggered = currentBuild.getBuildCauses().any { cause ->
                     def description = cause['shortDescription'] ?: ''
-                    description.toLowerCase().contains('github push by qasim')
+                    description.toLowerCase().contains('github push by')
                 }
 
                 if (pushTriggered) {
-                    emailext(
-                        to: 'qasimalik@gmail.com',
-                        from: 'sufwanamir99@gmail.com',
-                        subject: 'CSC418 Midterm - FA23-BDS-063 - Pipeline SUCCESS',
-                        body: """
+                    def recipient = sh(
+                        script: 'git log -1 --format=%ae',
+                        returnStdout: true
+                    ).trim()
+
+                    if (recipient && recipient.contains('@')) {
+                        emailext(
+                            to: recipient,
+                            from: 'sufwanamir99@gmail.com',
+                            subject: 'CSC418 Midterm - FA23-BDS-063 - Pipeline SUCCESS',
+                            body: """
 The automated ML pipeline completed successfully.
 
 Student ID: FA23-BDS-063
@@ -145,10 +152,10 @@ Docker Image: sufwanamir/devops-midterm-api:1.0
 API Metrics: http://13.60.111.25:8000/metrics
 Jenkins Build: ${BUILD_URL}
 """
-                    )
+                        )
+                    }
                 }
             }
         }
     }
-
-}
+\n}\n
